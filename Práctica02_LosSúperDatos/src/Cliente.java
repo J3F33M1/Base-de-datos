@@ -1,116 +1,159 @@
 /**
- * Clase Cliente
- * Representa un cliente registrado en la cadena de farmacias "Xiao Mao".
- * Almacena información personal y de contacto del cliente.</p>
+ * Cliente o paciente de la cadena.
+ * Incluye datos de contacto, domicilio, metodo de pago y la sucursal
+ * donde suele comprar para poder aplicar los descuentos por recurrencia.
  */
 public class Cliente {
 
-    /** Identificador único del cliente (llave primaria). */
     private int idCliente;
-
-    /** Nombre completo del cliente. */
     private String nombre;
-
-    /** Correo electrónico del cliente. */
-    private String correo;
-
-    /** Número de teléfono del cliente. */
+    private String apellidoPaterno;
+    private String apellidoMaterno;
     private String telefono;
+    private String correo;
+    private String fechaNacimiento; // AAAA-MM-DD
+    private String calle;
+    private String numeroExterior;
+    private String numeroInterior;
+    private String colonia;
+    private String estado;
+    private String metodoPago; // efectivo, tarjeta
+    private int visitasAnuales;
+    private int idSucursal; // relacion con sucursal
 
-    /** Fecha de nacimiento del cliente en formato AAAA-MM-DD. */
-    private String fechaNacimiento;
+    public static final String ENCABEZADO =
+            "idCliente,nombre,apellidoPaterno,apellidoMaterno,telefono,correo,fechaNacimiento,calle,numeroExterior,numeroInterior,colonia,estado,metodoPago,visitasAnuales,idSucursal";
 
-    /** Encabezado CSV para el archivo de clientes. */
-    public static final String ENCABEZADO = "idCliente,nombre,correo,telefono,fechaNacimiento";
-
-    /**
-     * Constructor completo de Cliente.
-     *
-     * @param idCliente       Identificador único.
-     * @param nombre          Nombre completo.
-     * @param correo          Correo electrónico.
-     * @param telefono        Número de teléfono.
-     * @param fechaNacimiento Fecha de nacimiento (AAAA-MM-DD).
-     */
-    public Cliente(int idCliente, String nombre, String correo, String telefono, String fechaNacimiento) {
+    public Cliente(int idCliente,
+                   String nombre,
+                   String apellidoPaterno,
+                   String apellidoMaterno,
+                   String telefono,
+                   String correo,
+                   String fechaNacimiento,
+                   String calle,
+                   String numeroExterior,
+                   String numeroInterior,
+                   String colonia,
+                   String estado,
+                   String metodoPago,
+                   int visitasAnuales,
+                   int idSucursal) {
         this.idCliente = idCliente;
         this.nombre = nombre;
-        this.correo = correo;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.telefono = telefono;
+        this.correo = correo;
         this.fechaNacimiento = fechaNacimiento;
+        this.calle = calle;
+        this.numeroExterior = numeroExterior;
+        this.numeroInterior = numeroInterior;
+        this.colonia = colonia;
+        this.estado = estado;
+        this.metodoPago = metodoPago;
+        this.visitasAnuales = visitasAnuales;
+        this.idSucursal = idSucursal;
     }
 
-    /** @return El identificador único del cliente. */
+    // Getters y setters
     public int getIdCliente() { return idCliente; }
-
-    /** @param idCliente Nuevo identificador. */
     public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
-
-    /** @return El nombre del cliente. */
     public String getNombre() { return nombre; }
-
-    /** @param nombre Nuevo nombre. */
     public void setNombre(String nombre) { this.nombre = nombre; }
-
-    /** @return El correo del cliente. */
-    public String getCorreo() { return correo; }
-
-    /** @param correo Nuevo correo. */
-    public void setCorreo(String correo) { this.correo = correo; }
-
-    /** @return El teléfono del cliente. */
+    public String getApellidoPaterno() { return apellidoPaterno; }
+    public void setApellidoPaterno(String apellidoPaterno) { this.apellidoPaterno = apellidoPaterno; }
+    public String getApellidoMaterno() { return apellidoMaterno; }
+    public void setApellidoMaterno(String apellidoMaterno) { this.apellidoMaterno = apellidoMaterno; }
     public String getTelefono() { return telefono; }
-
-    /** @param telefono Nuevo teléfono. */
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    /** @return La fecha de nacimiento del cliente. */
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
     public String getFechaNacimiento() { return fechaNacimiento; }
-
-    /** @param fechaNacimiento Nueva fecha de nacimiento. */
     public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public String getCalle() { return calle; }
+    public void setCalle(String calle) { this.calle = calle; }
+    public String getNumeroExterior() { return numeroExterior; }
+    public void setNumeroExterior(String numeroExterior) { this.numeroExterior = numeroExterior; }
+    public String getNumeroInterior() { return numeroInterior; }
+    public void setNumeroInterior(String numeroInterior) { this.numeroInterior = numeroInterior; }
+    public String getColonia() { return colonia; }
+    public void setColonia(String colonia) { this.colonia = colonia; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public String getMetodoPago() { return metodoPago; }
+    public void setMetodoPago(String metodoPago) { this.metodoPago = metodoPago; }
+    public int getVisitasAnuales() { return visitasAnuales; }
+    public void setVisitasAnuales(int visitasAnuales) { this.visitasAnuales = visitasAnuales; }
+    public int getIdSucursal() { return idSucursal; }
+    public void setIdSucursal(int idSucursal) { this.idSucursal = idSucursal; }
 
-    // ──────────────────── Métodos CSV ────────────────────
-
-    /**
-     * Convierte el objeto Cliente a una línea en formato CSV.
-     *
-     * @return Cadena con los campos separados por comas.
-     */
-    public String aCSV() {
-        return idCliente + "," + nombre + "," + correo + "," + telefono + "," + fechaNacimiento;
+    public double calcularDescuento() {
+        if (visitasAnuales >= 6) return 0.25;
+        if (visitasAnuales >= 4) return 0.10;
+        if (visitasAnuales >= 2) return 0.05;
+        return 0.0;
     }
 
-    /**
-     * Crea un objeto Cliente a partir de una línea CSV.
-     *
-     * @param linea Línea leída del archivo CSV.
-     * @return Objeto Cliente con los datos de la línea.
-     * @throws IllegalArgumentException Si la línea no tiene el formato correcto.
-     * @throws NumberFormatException    Si el ID no es un número entero válido.
-     */
+    // CSV helpers
+    public String aCSV() {
+        return String.join(",",
+                String.valueOf(idCliente),
+                nombre,
+                apellidoPaterno,
+                apellidoMaterno,
+                telefono,
+                correo,
+                fechaNacimiento,
+                calle,
+                numeroExterior,
+                numeroInterior,
+                colonia,
+                estado,
+                metodoPago,
+                String.valueOf(visitasAnuales),
+                String.valueOf(idSucursal));
+    }
+
     public static Cliente desdeCSV(String linea) {
         String[] partes = linea.split(",", -1);
-        if (partes.length != 5) {
-            throw new IllegalArgumentException("Formato CSV inválido para Cliente: " + linea);
+        if (partes.length != 15) {
+            throw new IllegalArgumentException("Linea de cliente invalida: " + linea);
         }
         int id = Integer.parseInt(partes[0].trim());
-        return new Cliente(id, partes[1].trim(), partes[2].trim(), partes[3].trim(), partes[4].trim());
+        int visitas = Integer.parseInt(partes[13].trim());
+        int sucursalId = Integer.parseInt(partes[14].trim());
+        return new Cliente(
+                id,
+                partes[1].trim(),
+                partes[2].trim(),
+                partes[3].trim(),
+                partes[4].trim(),
+                partes[5].trim(),
+                partes[6].trim(),
+                partes[7].trim(),
+                partes[8].trim(),
+                partes[9].trim(),
+                partes[10].trim(),
+                partes[11].trim(),
+                partes[12].trim(),
+                visitas,
+                sucursalId
+        );
     }
 
-    /**
-     * Representación legible del cliente para mostrar en consola.
-     *
-     * @return Cadena formateada con todos los campos del cliente.
-     */
     @Override
     public String toString() {
-        return "╔══ CLIENTE ═══════════════════════════╗\n" +
-               "  ID              : " + idCliente + "\n" +
-               "  Nombre          : " + nombre + "\n" +
-               "  Correo          : " + correo + "\n" +
-               "  Teléfono        : " + telefono + "\n" +
-               "  Fecha Nac.      : " + fechaNacimiento + "\n" +
-               "╚══════════════════════════════════════╝";
+        double descuento = calcularDescuento() * 100;
+        return "Cliente #" + idCliente + "\n"
+                + "  Nombre          : " + nombre + " " + apellidoPaterno + " " + apellidoMaterno + "\n"
+                + "  Telefono        : " + telefono + "\n"
+                + "  Correo          : " + correo + "\n"
+                + "  Fecha nacimiento: " + fechaNacimiento + "\n"
+                + "  Domicilio       : " + calle + " " + numeroExterior + " " + numeroInterior + ", " + colonia + ", " + estado + "\n"
+                + "  Metodo pago     : " + metodoPago + "\n"
+                + "  Visitas anuales : " + visitasAnuales + "\n"
+                + "  Descuento       : " + String.format("%.0f", descuento) + "%\n"
+                + "  Sucursal ID     : " + idSucursal;
     }
 }

@@ -1,151 +1,134 @@
 /**
- * Clase Medicamento
- *
- * <p>Representa un medicamento o insumo disponible en la cadena de farmacias "Xiao Mao".
- * Almacena información como nombre, precio, stock, categoría y la sucursal a la que pertenece.</p>
- *
- * @author Equipo Fundamentos de Bases de Datos
- * @version 1.0
+ * Medicamento o insumo.
+ * Incluye relacion con la sucursal que lo almacena para reflejar el
+ * control de inventario de cada sucursal.
  */
 public class Medicamento {
 
-    /** Identificador único del medicamento (llave primaria). */
     private int idMedicamento;
-
-    /** Nombre comercial del medicamento o insumo. */
-    private String nombre;
-
-    /** Descripción del medicamento (uso, presentación, etc.). */
-    private String descripcion;
-
-    /** Precio de venta al público (valor numérico, mayor a 0). */
-    private double precio;
-
-    /** Cantidad disponible en inventario (número entero, mayor o igual a 0). */
+    private String nombreComercial;
+    private String nombreGenerico;
+    private String formaFarmaceutica;
+    private String concentracion;
+    private String viaAdministracion;
+    private String tipoControl;       // controlado, libre, requiere receta
     private int stock;
+    private double precioPublico;
+    private double precioProveedor;
+    private String fechaCaducidad;    // AAAA-MM-DD
+    private int idSucursal;           // referencia a sucursal
 
-    /** Categoría del medicamento (ej. analgésico, antibiótico, insumo médico). */
-    private String categoria;
+    public static final String ENCABEZADO =
+            "idMedicamento,nombreComercial,nombreGenerico,formaFarmaceutica,concentracion,viaAdministracion,tipoControl,stock,precioPublico,precioProveedor,fechaCaducidad,idSucursal";
 
-    /** ID de la sucursal a la que pertenece este medicamento. */
-    private int idSucursal;
-
-    /** Encabezado CSV para el archivo de medicamentos. */
-    public static final String ENCABEZADO = "idMedicamento,nombre,descripcion,precio,stock,categoria,idSucursal";
-
-    /**
-     * Constructor completo de Medicamento.
-     *
-     * @param idMedicamento Identificador único.
-     * @param nombre        Nombre del medicamento.
-     * @param descripcion   Descripción del medicamento.
-     * @param precio        Precio de venta (double).
-     * @param stock         Cantidad en inventario (int).
-     * @param categoria     Categoría del producto.
-     * @param idSucursal    ID de la sucursal relacionada.
-     */
-    public Medicamento(int idMedicamento, String nombre, String descripcion,
-                       double precio, int stock, String categoria, int idSucursal) {
+    public Medicamento(int idMedicamento,
+                       String nombreComercial,
+                       String nombreGenerico,
+                       String formaFarmaceutica,
+                       String concentracion,
+                       String viaAdministracion,
+                       String tipoControl,
+                       int stock,
+                       double precioPublico,
+                       double precioProveedor,
+                       String fechaCaducidad,
+                       int idSucursal) {
         this.idMedicamento = idMedicamento;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
+        this.nombreComercial = nombreComercial;
+        this.nombreGenerico = nombreGenerico;
+        this.formaFarmaceutica = formaFarmaceutica;
+        this.concentracion = concentracion;
+        this.viaAdministracion = viaAdministracion;
+        this.tipoControl = tipoControl;
         this.stock = stock;
-        this.categoria = categoria;
+        this.precioPublico = precioPublico;
+        this.precioProveedor = precioProveedor;
+        this.fechaCaducidad = fechaCaducidad;
         this.idSucursal = idSucursal;
     }
 
-    // ──────────────────── Getters y Setters ────────────────────
-
-    /** @return El identificador único del medicamento. */
+    // Getters y setters
     public int getIdMedicamento() { return idMedicamento; }
-
-    /** @param idMedicamento Nuevo identificador. */
     public void setIdMedicamento(int idMedicamento) { this.idMedicamento = idMedicamento; }
-
-    /** @return El nombre del medicamento. */
-    public String getNombre() { return nombre; }
-
-    /** @param nombre Nuevo nombre. */
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    /** @return La descripción del medicamento. */
-    public String getDescripcion() { return descripcion; }
-
-    /** @param descripcion Nueva descripción. */
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-    /** @return El precio del medicamento. */
-    public double getPrecio() { return precio; }
-
-    /** @param precio Nuevo precio (debe ser mayor a 0). */
-    public void setPrecio(double precio) { this.precio = precio; }
-
-    /** @return El stock disponible. */
+    public String getNombreComercial() { return nombreComercial; }
+    public void setNombreComercial(String nombreComercial) { this.nombreComercial = nombreComercial; }
+    public String getNombreGenerico() { return nombreGenerico; }
+    public void setNombreGenerico(String nombreGenerico) { this.nombreGenerico = nombreGenerico; }
+    public String getFormaFarmaceutica() { return formaFarmaceutica; }
+    public void setFormaFarmaceutica(String formaFarmaceutica) { this.formaFarmaceutica = formaFarmaceutica; }
+    public String getConcentracion() { return concentracion; }
+    public void setConcentracion(String concentracion) { this.concentracion = concentracion; }
+    public String getViaAdministracion() { return viaAdministracion; }
+    public void setViaAdministracion(String viaAdministracion) { this.viaAdministracion = viaAdministracion; }
+    public String getTipoControl() { return tipoControl; }
+    public void setTipoControl(String tipoControl) { this.tipoControl = tipoControl; }
     public int getStock() { return stock; }
-
-    /** @param stock Nuevo stock (debe ser >= 0). */
     public void setStock(int stock) { this.stock = stock; }
-
-    /** @return La categoría del medicamento. */
-    public String getCategoria() { return categoria; }
-
-    /** @param categoria Nueva categoría. */
-    public void setCategoria(String categoria) { this.categoria = categoria; }
-
-    /** @return El ID de la sucursal asociada. */
+    public double getPrecioPublico() { return precioPublico; }
+    public void setPrecioPublico(double precioPublico) { this.precioPublico = precioPublico; }
+    public double getPrecioProveedor() { return precioProveedor; }
+    public void setPrecioProveedor(double precioProveedor) { this.precioProveedor = precioProveedor; }
+    public String getFechaCaducidad() { return fechaCaducidad; }
+    public void setFechaCaducidad(String fechaCaducidad) { this.fechaCaducidad = fechaCaducidad; }
     public int getIdSucursal() { return idSucursal; }
-
-    /** @param idSucursal Nuevo ID de sucursal. */
     public void setIdSucursal(int idSucursal) { this.idSucursal = idSucursal; }
 
-    // ──────────────────── Métodos CSV ────────────────────
-
-    /**
-     * Convierte el objeto Medicamento a una línea en formato CSV.
-     *
-     * @return Cadena con los campos separados por comas.
-     */
+    // CSV helpers
     public String aCSV() {
-        return idMedicamento + "," + nombre + "," + descripcion + "," +
-               precio + "," + stock + "," + categoria + "," + idSucursal;
+        return String.join(",",
+                String.valueOf(idMedicamento),
+                nombreComercial,
+                nombreGenerico,
+                formaFarmaceutica,
+                concentracion,
+                viaAdministracion,
+                tipoControl,
+                String.valueOf(stock),
+                String.valueOf(precioPublico),
+                String.valueOf(precioProveedor),
+                fechaCaducidad,
+                String.valueOf(idSucursal));
     }
 
-    /**
-     * Crea un objeto Medicamento a partir de una línea CSV.
-     *
-     * @param linea Línea leída del archivo CSV.
-     * @return Objeto Medicamento con los datos de la línea.
-     * @throws IllegalArgumentException Si la línea no tiene el formato correcto.
-     * @throws NumberFormatException    Si algún campo numérico no es válido.
-     */
     public static Medicamento desdeCSV(String linea) {
         String[] partes = linea.split(",", -1);
-        if (partes.length != 7) {
-            throw new IllegalArgumentException("Formato CSV inválido para Medicamento: " + linea);
+        if (partes.length != 12) {
+            throw new IllegalArgumentException("Linea de medicamento invalida: " + linea);
         }
         int id = Integer.parseInt(partes[0].trim());
-        double precio = Double.parseDouble(partes[3].trim());
-        int stock = Integer.parseInt(partes[4].trim());
-        int idSuc = Integer.parseInt(partes[6].trim());
-        return new Medicamento(id, partes[1].trim(), partes[2].trim(), precio, stock, partes[5].trim(), idSuc);
+        int stock = Integer.parseInt(partes[7].trim());
+        double precioPublico = Double.parseDouble(partes[8].trim());
+        double precioProveedor = Double.parseDouble(partes[9].trim());
+        int sucursalId = Integer.parseInt(partes[11].trim());
+        return new Medicamento(
+                id,
+                partes[1].trim(),
+                partes[2].trim(),
+                partes[3].trim(),
+                partes[4].trim(),
+                partes[5].trim(),
+                partes[6].trim(),
+                stock,
+                precioPublico,
+                precioProveedor,
+                partes[10].trim(),
+                sucursalId
+        );
     }
 
-    /**
-     * Representación legible del medicamento para mostrar en consola.
-     *
-     * @return Cadena formateada con todos los campos.
-     */
     @Override
     public String toString() {
-        return "╔══ MEDICAMENTO / INSUMO ══════════════╗\n" +
-               "  ID          : " + idMedicamento + "\n" +
-               "  Nombre      : " + nombre + "\n" +
-               "  Descripción : " + descripcion + "\n" +
-               "  Precio      : $" + String.format("%.2f", precio) + "\n" +
-               "  Stock       : " + stock + " unidades\n" +
-               "  Categoría   : " + categoria + "\n" +
-               "  Sucursal ID : " + idSucursal + "\n" +
-               "╚══════════════════════════════════════╝";
+        return "Medicamento #" + idMedicamento + "\n"
+                + "  Nombre comercial : " + nombreComercial + "\n"
+                + "  Nombre generico  : " + nombreGenerico + "\n"
+                + "  Forma farmaceutica: " + formaFarmaceutica + "\n"
+                + "  Concentracion    : " + concentracion + "\n"
+                + "  Via administracion: " + viaAdministracion + "\n"
+                + "  Tipo control     : " + tipoControl + "\n"
+                + "  Stock            : " + stock + "\n"
+                + "  Precio publico   : " + String.format("%.2f", precioPublico) + "\n"
+                + "  Precio proveedor : " + String.format("%.2f", precioProveedor) + "\n"
+                + "  Caducidad        : " + fechaCaducidad + "\n"
+                + "  Sucursal ID      : " + idSucursal;
     }
 }

@@ -1,123 +1,112 @@
 /**
- * Clase Sucursal
- *
- * <p>Representa una sucursal de la cadena de farmacias "Xiao Mao".
- * Contiene los atributos principales de una sucursal y métodos
- * para convertir los datos a formato CSV y viceversa.</p>
- *
- * @author Equipo Fundamentos de Bases de Datos
- * @version 1.0
+ * Sucursal entity.
+ * Stores the core branch data needed by the use case document:
+ * name, full address, contact info and opening hours.
  */
 public class Sucursal {
 
-    /** Identificador único de la sucursal (llave primaria). */
     private int idSucursal;
-
-    /** Nombre de la sucursal. */
     private String nombre;
-
-    /** Dirección física de la sucursal. */
-    private String direccion;
-
-    /** Teléfono de contacto. */
+    private String calle;
+    private String numeroExterior;
+    private String numeroInterior;
+    private String colonia;
+    private String estado;
     private String telefono;
+    private String horarioApertura;
+    private String horarioCierre;
 
-    /** Ciudad donde se encuentra la sucursal. */
-    private String ciudad;
+    public static final String ENCABEZADO = "idSucursal,nombre,calle,numeroExterior,numeroInterior,colonia,estado,telefono,horarioApertura,horarioCierre";
 
-    /** Encabezado CSV para el archivo de sucursales. */
-    public static final String ENCABEZADO = "idSucursal,nombre,direccion,telefono,ciudad";
-
-    /**
-     * Constructor completo de Sucursal.
-     *
-     * @param idSucursal Identificador único (número entero positivo).
-     * @param nombre     Nombre de la sucursal.
-     * @param direccion  Dirección física.
-     * @param telefono   Número telefónico.
-     * @param ciudad     Ciudad de ubicación.
-     */
-    public Sucursal(int idSucursal, String nombre, String direccion, String telefono, String ciudad) {
+    public Sucursal(int idSucursal,
+                    String nombre,
+                    String calle,
+                    String numeroExterior,
+                    String numeroInterior,
+                    String colonia,
+                    String estado,
+                    String telefono,
+                    String horarioApertura,
+                    String horarioCierre) {
         this.idSucursal = idSucursal;
         this.nombre = nombre;
-        this.direccion = direccion;
+        this.calle = calle;
+        this.numeroExterior = numeroExterior;
+        this.numeroInterior = numeroInterior;
+        this.colonia = colonia;
+        this.estado = estado;
         this.telefono = telefono;
-        this.ciudad = ciudad;
+        this.horarioApertura = horarioApertura;
+        this.horarioCierre = horarioCierre;
     }
 
-    // ──────────────────── Getters y Setters ────────────────────
-
-    /** @return El identificador único de la sucursal. */
+    // Getters y setters
     public int getIdSucursal() { return idSucursal; }
-
-    /** @param idSucursal Nuevo identificador. */
     public void setIdSucursal(int idSucursal) { this.idSucursal = idSucursal; }
-
-    /** @return El nombre de la sucursal. */
     public String getNombre() { return nombre; }
-
-    /** @param nombre Nuevo nombre. */
     public void setNombre(String nombre) { this.nombre = nombre; }
-
-    /** @return La dirección de la sucursal. */
-    public String getDireccion() { return direccion; }
-
-    /** @param direccion Nueva dirección. */
-    public void setDireccion(String direccion) { this.direccion = direccion; }
-
-    /** @return El teléfono de la sucursal. */
+    public String getCalle() { return calle; }
+    public void setCalle(String calle) { this.calle = calle; }
+    public String getNumeroExterior() { return numeroExterior; }
+    public void setNumeroExterior(String numeroExterior) { this.numeroExterior = numeroExterior; }
+    public String getNumeroInterior() { return numeroInterior; }
+    public void setNumeroInterior(String numeroInterior) { this.numeroInterior = numeroInterior; }
+    public String getColonia() { return colonia; }
+    public void setColonia(String colonia) { this.colonia = colonia; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
     public String getTelefono() { return telefono; }
-
-    /** @param telefono Nuevo teléfono. */
     public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getHorarioApertura() { return horarioApertura; }
+    public void setHorarioApertura(String horarioApertura) { this.horarioApertura = horarioApertura; }
+    public String getHorarioCierre() { return horarioCierre; }
+    public void setHorarioCierre(String horarioCierre) { this.horarioCierre = horarioCierre; }
 
-    /** @return La ciudad de la sucursal. */
-    public String getCiudad() { return ciudad; }
-
-    /** @param ciudad Nueva ciudad. */
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
-
-    // ──────────────────── Métodos CSV ────────────────────
-
-    /**
-     * Convierte el objeto Sucursal a una línea en formato CSV.
-     *
-     * @return Cadena con los campos separados por comas.
-     */
+    // CSV helpers
     public String aCSV() {
-        return idSucursal + "," + nombre + "," + direccion + "," + telefono + "," + ciudad;
+        return String.join(",",
+                String.valueOf(idSucursal),
+                nombre,
+                calle,
+                numeroExterior,
+                numeroInterior,
+                colonia,
+                estado,
+                telefono,
+                horarioApertura,
+                horarioCierre);
     }
 
-    /**
-     * Crea un objeto Sucursal a partir de una línea CSV.
-     *
-     * @param linea Línea leída del archivo CSV.
-     * @return Objeto Sucursal con los datos de la línea.
-     * @throws IllegalArgumentException Si la línea no tiene el formato correcto.
-     * @throws NumberFormatException    Si el ID no es un número entero válido.
-     */
     public static Sucursal desdeCSV(String linea) {
         String[] partes = linea.split(",", -1);
-        if (partes.length != 5) {
-            throw new IllegalArgumentException("Formato CSV inválido para Sucursal: " + linea);
+        if (partes.length != 10) {
+            throw new IllegalArgumentException("Linea de sucursal invalida: " + linea);
         }
         int id = Integer.parseInt(partes[0].trim());
-        return new Sucursal(id, partes[1].trim(), partes[2].trim(), partes[3].trim(), partes[4].trim());
+        return new Sucursal(
+                id,
+                partes[1].trim(),
+                partes[2].trim(),
+                partes[3].trim(),
+                partes[4].trim(),
+                partes[5].trim(),
+                partes[6].trim(),
+                partes[7].trim(),
+                partes[8].trim(),
+                partes[9].trim()
+        );
     }
 
-    /**
-     * Representación legible de la sucursal para mostrar en consola.
-     *
-     * @return Cadena formateada con todos los campos de la sucursal.
-     */
     @Override
     public String toString() {
-        return "╔══ SUCURSAL ══════════════════════════╗\n" +
-               "  ID        : " + idSucursal + "\n" +
-               "  Nombre    : " + nombre + "\n" +
-               "  Dirección : " + direccion + "\n" +
-               "  Teléfono  : " + telefono + "\n" +
-               "  Ciudad    : " + ciudad + "\n" +
-               "╚══════════════════════════════════════╝";
+        return "Sucursal #" + idSucursal + "\n"
+                + "  Nombre          : " + nombre + "\n"
+                + "  Calle           : " + calle + "\n"
+                + "  Num exterior    : " + numeroExterior + "\n"
+                + "  Num interior    : " + numeroInterior + "\n"
+                + "  Colonia         : " + colonia + "\n"
+                + "  Estado          : " + estado + "\n"
+                + "  Telefono        : " + telefono + "\n"
+                + "  Horario         : " + horarioApertura + " - " + horarioCierre;
     }
 }

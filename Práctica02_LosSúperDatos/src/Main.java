@@ -1,111 +1,53 @@
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 /**
- * Clase Main (Punto de Entrada)
- *
- * <p>Clase principal del sistema de gestión de la cadena de farmacias "Xiao Mao".
- * Contiene el menú interactivo de consola que permite al usuario realizar
- * operaciones CRUD sobre las entidades: Sucursal, Medicamento y Cliente.</p>
- *
- * <p>La información se persiste en archivos CSV ubicados en la carpeta {@code datos/},
- * simulando el comportamiento de una base de datos para su posterior migración.</p>
- *
- * <p><b>Menú principal:</b></p>
- * <pre>
- *   1. Gestionar Sucursales
- *   2. Gestionar Medicamentos/Insumos
- *   3. Gestionar Clientes
- *   0. Salir
- * </pre>
- *
- * @author Equipo Fundamentos de Bases de Datos
- * @version 1.0
+ * CRUD para sucursales, medicamentos/insumos y clientes.
+ * Aun falta todo lo de doumentacion lo borre para que no este tan sesgado lo que vayamos a hacer
  */
 public class Main {
 
-    /** Scanner global para leer entradas del usuario. */
     private static final Scanner scanner = new Scanner(System.in);
-
-    /** DAO para operaciones de sucursales. */
     private static final SucursalDAO sucursalDAO = new SucursalDAO();
-
-    /** DAO para operaciones de medicamentos. */
     private static final MedicamentoDAO medicamentoDAO = new MedicamentoDAO();
-
-    /** DAO para operaciones de clientes. */
     private static final ClienteDAO clienteDAO = new ClienteDAO();
 
-    // ═══════════════════════════════════════════════════
-    //                   PUNTO DE ENTRADA
-    // ═══════════════════════════════════════════════════
-
-    /**
-     * Método principal. Inicia la aplicación y muestra el menú principal.
-     *
-     * @param args Argumentos de línea de comandos (no utilizados).
-     */
     public static void main(String[] args) {
-        imprimirBienvenida();
-        menuPrincipal();
-        System.out.println("\n  Hasta luego. ¡Que tenga un excelente día!\n");
-        scanner.close();
-    }
-
-    // ═══════════════════════════════════════════════════
-    //                   MENÚ PRINCIPAL
-    // ═══════════════════════════════════════════════════
-
-    /**
-     * Muestra y gestiona el menú principal de la aplicación.
-     * Permite navegar entre los submenús de cada entidad.
-     */
-    private static void menuPrincipal() {
+        System.out.println("=== Farmacia Xiao Mao ===");
         boolean activo = true;
         while (activo) {
-            System.out.println("\n╔══════════════════════════════════════════╗");
-            System.out.println("║       FARMACIA XIAO MAO - MENÚ PRINCIPAL ║");
-            System.out.println("╠══════════════════════════════════════════╣");
-            System.out.println("║  1. Gestionar Sucursales                 ║");
-            System.out.println("║  2. Gestionar Medicamentos / Insumos     ║");
-            System.out.println("║  3. Gestionar Clientes                   ║");
-            System.out.println("║  0. Salir                                ║");
-            System.out.println("╚══════════════════════════════════════════╝");
-
-            int opcion = Validador.leerEntero(scanner, "  Selecciona una opción: ");
+            System.out.println("\nMenu principal");
+            System.out.println(" 1) Gestionar sucursales");
+            System.out.println(" 2) Gestionar medicamentos / insumos");
+            System.out.println(" 3) Gestionar clientes");
+            System.out.println(" 0) Salir");
+            int opcion = Validador.leerEntero(scanner, "Elige una opcion: ");
             switch (opcion) {
                 case 1 -> menuSucursales();
                 case 2 -> menuMedicamentos();
                 case 3 -> menuClientes();
                 case 0 -> activo = false;
-                default -> System.out.println("  ⚠ Opción no válida. Intenta de nuevo.");
+                default -> System.out.println("Opcion no valida.");
             }
         }
+        System.out.println("Fin del programa.");
+        scanner.close();
     }
 
-    // ═══════════════════════════════════════════════════
-    //                 MENÚ SUCURSALES
-    // ═══════════════════════════════════════════════════
-
-    /**
-     * Muestra y gestiona el submenú de sucursales.
-     * Permite agregar, consultar, editar y eliminar sucursales.
-     */
+    // ---------- Sucursales ----------
     private static void menuSucursales() {
         boolean activo = true;
         while (activo) {
-            System.out.println("\n┌─────────────────────────────────────────┐");
-            System.out.println("│         GESTIÓN DE SUCURSALES            │");
-            System.out.println("├─────────────────────────────────────────┤");
-            System.out.println("│  1. Agregar sucursal                     │");
-            System.out.println("│  2. Consultar sucursal por ID            │");
-            System.out.println("│  3. Listar todas las sucursales          │");
-            System.out.println("│  4. Editar sucursal                      │");
-            System.out.println("│  5. Eliminar sucursal                    │");
-            System.out.println("│  0. Volver al menú principal             │");
-            System.out.println("└─────────────────────────────────────────┘");
-
-            int opcion = Validador.leerEntero(scanner, "  Selecciona una opción: ");
+            System.out.println("\nSucursales");
+            System.out.println(" 1) Agregar");
+            System.out.println(" 2) Consultar por ID");
+            System.out.println(" 3) Listar todas");
+            System.out.println(" 4) Editar");
+            System.out.println(" 5) Eliminar");
+            System.out.println(" 0) Volver");
+            int opcion = Validador.leerEntero(scanner, "Opcion: ");
             try {
                 switch (opcion) {
                     case 1 -> agregarSucursal();
@@ -114,128 +56,117 @@ public class Main {
                     case 4 -> editarSucursal();
                     case 5 -> eliminarSucursal();
                     case 0 -> activo = false;
-                    default -> System.out.println("  ⚠ Opción no válida.");
+                    default -> System.out.println("Opcion no valida.");
                 }
-            } catch (IOException e) {
-                System.out.println("  ✖ Error de archivo: " + e.getMessage());
-            } catch (IllegalArgumentException | NoSuchElementException e) {
-                System.out.println("  ✖ Error: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("  ✖ Error inesperado: " + e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * Solicita datos al usuario y agrega una nueva sucursal al sistema.
-     *
-     * @throws IOException Si ocurre un error al guardar en el archivo CSV.
-     */
     private static void agregarSucursal() throws IOException {
-        System.out.println("\n  ── Nueva Sucursal ──");
-        int id = Validador.leerEnteroPositivo(scanner, "  ID Sucursal   : ");
-        String nombre = Validador.leerTextoNoVacio(scanner, "  Nombre        : ");
-        String dir = Validador.leerTextoNoVacio(scanner, "  Dirección     : ");
-        String tel = Validador.leerTextoNoVacio(scanner, "  Teléfono      : ");
-        String ciudad = Validador.leerTextoNoVacio(scanner, "  Ciudad        : ");
-        sucursalDAO.agregar(new Sucursal(id, nombre, dir, tel, ciudad));
+        System.out.println("\nNueva sucursal");
+        int id = Validador.leerEnteroPositivo(scanner, "ID: ");
+        String nombre = Validador.leerTextoNoVacio(scanner, "Nombre: ");
+        String calle = Validador.leerTextoNoVacio(scanner, "Calle: ");
+        String numExt = Validador.leerTextoNoVacio(scanner, "Numero exterior: ");
+        String numInt = Validador.leerTextoNoVacio(scanner, "Numero interior (NA si no aplica): ");
+        String colonia = Validador.leerTextoNoVacio(scanner, "Colonia: ");
+        String estado = Validador.leerTextoNoVacio(scanner, "Estado: ");
+        String tel = Validador.leerTextoNoVacio(scanner, "Telefono: ");
+        String horaIni = Validador.leerTextoNoVacio(scanner, "Horario apertura (ej 08:00): ");
+        String horaFin = Validador.leerTextoNoVacio(scanner, "Horario cierre (ej 21:00): ");
+        sucursalDAO.agregar(new Sucursal(id, nombre, calle, numExt, numInt, colonia, estado, tel, horaIni, horaFin));
     }
 
-    /**
-     * Solicita un ID y muestra los datos de la sucursal correspondiente.
-     *
-     * @throws IOException Si ocurre un error al leer el archivo CSV.
-     */
     private static void consultarSucursal() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a consultar: ");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a consultar: ");
         Sucursal s = sucursalDAO.buscarPorId(id);
-        if (s != null) System.out.println("\n" + s);
-        else System.out.println("  ✖ No se encontró sucursal con ID: " + id);
+        if (s == null) {
+            System.out.println("No existe la sucursal.");
+        } else {
+            System.out.println("\n" + s);
+        }
     }
 
-    /**
-     * Muestra todas las sucursales registradas en el sistema.
-     *
-     * @throws IOException Si ocurre un error al leer el archivo CSV.
-     */
     private static void listarSucursales() throws IOException {
         List<Sucursal> lista = sucursalDAO.obtenerTodas();
         if (lista.isEmpty()) {
-            System.out.println("\n  No hay sucursales registradas.");
-        } else {
-            System.out.println("\n  Total: " + lista.size() + " sucursal(es)");
-            lista.forEach(s -> System.out.println("\n" + s));
+            System.out.println("No hay sucursales registradas.");
+            return;
+        }
+        System.out.println("Total: " + lista.size());
+        for (Sucursal s : lista) {
+            System.out.println("\n" + s);
         }
     }
 
-    /**
-     * Solicita un ID y permite editar los datos de la sucursal correspondiente.
-     *
-     * @throws IOException Si ocurre un error al leer/escribir el archivo CSV.
-     */
     private static void editarSucursal() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a editar: ");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a editar: ");
         Sucursal existente = sucursalDAO.buscarPorId(id);
         if (existente == null) {
-            System.out.println("  ✖ No se encontró sucursal con ID: " + id);
+            System.out.println("No existe la sucursal.");
             return;
         }
-        System.out.println("  (Deja vacío y presiona Enter para conservar el valor actual)");
-        System.out.print("  Nombre [" + existente.getNombre() + "]: ");
+        System.out.println("Deja vacio para conservar el valor actual.");
+        System.out.print("Nombre [" + existente.getNombre() + "]: ");
         String nombre = scanner.nextLine().trim();
-        System.out.print("  Dirección [" + existente.getDireccion() + "]: ");
-        String dir = scanner.nextLine().trim();
-        System.out.print("  Teléfono [" + existente.getTelefono() + "]: ");
+        System.out.print("Calle [" + existente.getCalle() + "]: ");
+        String calle = scanner.nextLine().trim();
+        System.out.print("Numero exterior [" + existente.getNumeroExterior() + "]: ");
+        String numExt = scanner.nextLine().trim();
+        System.out.print("Numero interior [" + existente.getNumeroInterior() + "]: ");
+        String numInt = scanner.nextLine().trim();
+        System.out.print("Colonia [" + existente.getColonia() + "]: ");
+        String colonia = scanner.nextLine().trim();
+        System.out.print("Estado [" + existente.getEstado() + "]: ");
+        String estado = scanner.nextLine().trim();
+        System.out.print("Telefono [" + existente.getTelefono() + "]: ");
         String tel = scanner.nextLine().trim();
-        System.out.print("  Ciudad [" + existente.getCiudad() + "]: ");
-        String ciudad = scanner.nextLine().trim();
+        System.out.print("Horario apertura [" + existente.getHorarioApertura() + "]: ");
+        String horaIni = scanner.nextLine().trim();
+        System.out.print("Horario cierre [" + existente.getHorarioCierre() + "]: ");
+        String horaFin = scanner.nextLine().trim();
 
         if (!nombre.isEmpty()) existente.setNombre(nombre);
-        if (!dir.isEmpty()) existente.setDireccion(dir);
+        if (!calle.isEmpty()) existente.setCalle(calle);
+        if (!numExt.isEmpty()) existente.setNumeroExterior(numExt);
+        if (!numInt.isEmpty()) existente.setNumeroInterior(numInt);
+        if (!colonia.isEmpty()) existente.setColonia(colonia);
+        if (!estado.isEmpty()) existente.setEstado(estado);
         if (!tel.isEmpty()) existente.setTelefono(tel);
-        if (!ciudad.isEmpty()) existente.setCiudad(ciudad);
+        if (!horaIni.isEmpty()) existente.setHorarioApertura(horaIni);
+        if (!horaFin.isEmpty()) existente.setHorarioCierre(horaFin);
 
         sucursalDAO.editar(existente);
     }
 
-    /**
-     * Solicita un ID y elimina la sucursal correspondiente del sistema.
-     *
-     * @throws IOException Si ocurre un error al leer/escribir el archivo CSV.
-     */
     private static void eliminarSucursal() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a eliminar: ");
-        System.out.print("  ¿Confirmas eliminar la sucursal con ID " + id + "? (s/n): ");
-        String confirmacion = scanner.nextLine().trim().toLowerCase();
-        if (confirmacion.equals("s")) {
-            sucursalDAO.eliminar(id);
-        } else {
-            System.out.println("  Operación cancelada.");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a eliminar: ");
+        // proteger relacion: no se elimina si hay registros dependientes
+        List<Medicamento> meds = medicamentoDAO.obtenerTodos();
+        boolean tieneMeds = meds.stream().anyMatch(m -> m.getIdSucursal() == id);
+        List<Cliente> clientes = clienteDAO.obtenerTodos();
+        boolean tieneClientes = clientes.stream().anyMatch(c -> c.getIdSucursal() == id);
+        if (tieneMeds || tieneClientes) {
+            System.out.println("No se puede eliminar. Hay medicamentos o clientes ligados a esta sucursal.");
+            return;
         }
+        sucursalDAO.eliminar(id);
     }
 
-    // ═══════════════════════════════════════════════════
-    //              MENÚ MEDICAMENTOS
-    // ═══════════════════════════════════════════════════
-
-    /**
-     * Muestra y gestiona el submenú de medicamentos/insumos.
-     */
+    // ---------- Medicamentos ----------
     private static void menuMedicamentos() {
         boolean activo = true;
         while (activo) {
-            System.out.println("\n┌─────────────────────────────────────────┐");
-            System.out.println("│     GESTIÓN DE MEDICAMENTOS / INSUMOS    │");
-            System.out.println("├─────────────────────────────────────────┤");
-            System.out.println("│  1. Agregar medicamento                  │");
-            System.out.println("│  2. Consultar medicamento por ID         │");
-            System.out.println("│  3. Listar todos los medicamentos        │");
-            System.out.println("│  4. Editar medicamento                   │");
-            System.out.println("│  5. Eliminar medicamento                 │");
-            System.out.println("│  0. Volver al menú principal             │");
-            System.out.println("└─────────────────────────────────────────┘");
-
-            int opcion = Validador.leerEntero(scanner, "  Selecciona una opción: ");
+            System.out.println("\nMedicamentos / Insumos");
+            System.out.println(" 1) Agregar");
+            System.out.println(" 2) Consultar por ID");
+            System.out.println(" 3) Listar todos");
+            System.out.println(" 4) Editar");
+            System.out.println(" 5) Eliminar");
+            System.out.println(" 0) Volver");
+            int opcion = Validador.leerEntero(scanner, "Opcion: ");
             try {
                 switch (opcion) {
                     case 1 -> agregarMedicamento();
@@ -244,156 +175,119 @@ public class Main {
                     case 4 -> editarMedicamento();
                     case 5 -> eliminarMedicamento();
                     case 0 -> activo = false;
-                    default -> System.out.println("  ⚠ Opción no válida.");
+                    default -> System.out.println("Opcion no valida.");
                 }
-            } catch (IOException e) {
-                System.out.println("  ✖ Error de archivo: " + e.getMessage());
-            } catch (IllegalArgumentException | NoSuchElementException e) {
-                System.out.println("  ✖ Error: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("  ✖ Error inesperado: " + e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * Solicita datos al usuario y agrega un nuevo medicamento/insumo al sistema.
-     *
-     * @throws IOException Si ocurre un error al guardar en el archivo CSV.
-     */
     private static void agregarMedicamento() throws IOException {
-        System.out.println("\n  ── Nuevo Medicamento/Insumo ──");
-        int id = Validador.leerEnteroPositivo(scanner, "  ID Medicamento : ");
-        String nombre = Validador.leerTextoNoVacio(scanner, "  Nombre         : ");
-        String desc = Validador.leerTextoNoVacio(scanner, "  Descripción    : ");
-        double precio = Validador.leerDoublePositivo(scanner, "  Precio ($)     : ");
-        int stock = Validador.leerEnteroNoNegativo(scanner, "  Stock          : ");
-        String cat = Validador.leerTextoNoVacio(scanner, "  Categoría      : ");
-        int idSuc = Validador.leerEnteroPositivo(scanner, "  ID Sucursal    : ");
-        medicamentoDAO.agregar(new Medicamento(id, nombre, desc, precio, stock, cat, idSuc));
+        System.out.println("\nNuevo medicamento/insumo");
+        int id = Validador.leerEnteroPositivo(scanner, "ID: ");
+        String nombreCom = Validador.leerTextoNoVacio(scanner, "Nombre comercial: ");
+        String nombreGen = Validador.leerTextoNoVacio(scanner, "Nombre generico: ");
+        String forma = Validador.leerTextoNoVacio(scanner, "Forma farmaceutica (tableta, jarabe, etc): ");
+        String conc = Validador.leerTextoNoVacio(scanner, "Concentracion (ej 500 mg): ");
+        String via = Validador.leerTextoNoVacio(scanner, "Via de administracion: ");
+        String control = Validador.leerTextoNoVacio(scanner, "Tipo de control (receta, venta libre, controlado): ");
+        int stock = Validador.leerEnteroNoNegativo(scanner, "Stock: ");
+        double precioPub = Validador.leerDoublePositivo(scanner, "Precio publico: ");
+        double precioProv = Validador.leerDoublePositivo(scanner, "Precio proveedor: ");
+        String cad = Validador.leerTextoNoVacio(scanner, "Fecha de caducidad (AAAA-MM-DD): ");
+        int idSucursal = Validador.leerEnteroPositivo(scanner, "ID de sucursal: ");
+        validarSucursalExiste(idSucursal);
+        medicamentoDAO.agregar(new Medicamento(id, nombreCom, nombreGen, forma, conc, via, control,
+                stock, precioPub, precioProv, cad, idSucursal));
     }
 
-    /**
-     * Solicita un ID y muestra los datos del medicamento correspondiente.
-     *
-     * @throws IOException Si ocurre un error al leer el archivo CSV.
-     */
     private static void consultarMedicamento() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a consultar: ");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a consultar: ");
         Medicamento m = medicamentoDAO.buscarPorId(id);
-        if (m != null) System.out.println("\n" + m);
-        else System.out.println("  ✖ No se encontró medicamento con ID: " + id);
+        if (m == null) System.out.println("No existe el medicamento.");
+        else System.out.println("\n" + m);
     }
 
-    /**
-     * Muestra todos los medicamentos/insumos registrados en el sistema.
-     *
-     * @throws IOException Si ocurre un error al leer el archivo CSV.
-     */
     private static void listarMedicamentos() throws IOException {
         List<Medicamento> lista = medicamentoDAO.obtenerTodos();
         if (lista.isEmpty()) {
-            System.out.println("\n  No hay medicamentos registrados.");
-        } else {
-            System.out.println("\n  Total: " + lista.size() + " medicamento(s)");
-            lista.forEach(m -> System.out.println("\n" + m));
+            System.out.println("No hay medicamentos registrados.");
+            return;
+        }
+        System.out.println("Total: " + lista.size());
+        for (Medicamento m : lista) {
+            System.out.println("\n" + m);
         }
     }
 
-    /**
-     * Solicita un ID y permite editar los datos del medicamento correspondiente.
-     *
-     * @throws IOException Si ocurre un error al leer/escribir el archivo CSV.
-     */
     private static void editarMedicamento() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a editar: ");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a editar: ");
         Medicamento existente = medicamentoDAO.buscarPorId(id);
         if (existente == null) {
-            System.out.println("  ✖ No se encontró medicamento con ID: " + id);
+            System.out.println("No existe el medicamento.");
             return;
         }
-        System.out.println("  (Deja vacío y presiona Enter para conservar el valor actual)");
-        System.out.print("  Nombre [" + existente.getNombre() + "]: ");
-        String nombre = scanner.nextLine().trim();
-        System.out.print("  Descripción [" + existente.getDescripcion() + "]: ");
-        String desc = scanner.nextLine().trim();
-        System.out.print("  Precio [" + existente.getPrecio() + "] (0 para no cambiar): ");
-        String precioStr = scanner.nextLine().trim();
-        System.out.print("  Stock [" + existente.getStock() + "] (-1 para no cambiar): ");
-        String stockStr = scanner.nextLine().trim();
-        System.out.print("  Categoría [" + existente.getCategoria() + "]: ");
-        String cat = scanner.nextLine().trim();
-        System.out.print("  ID Sucursal [" + existente.getIdSucursal() + "] (0 para no cambiar): ");
-        String idSucStr = scanner.nextLine().trim();
+        System.out.println("Deja vacio para conservar el valor actual.");
+        System.out.print("Nombre comercial [" + existente.getNombreComercial() + "]: ");
+        String nombreCom = scanner.nextLine().trim();
+        System.out.print("Nombre generico [" + existente.getNombreGenerico() + "]: ");
+        String nombreGen = scanner.nextLine().trim();
+        System.out.print("Forma farmaceutica [" + existente.getFormaFarmaceutica() + "]: ");
+        String forma = scanner.nextLine().trim();
+        System.out.print("Concentracion [" + existente.getConcentracion() + "]: ");
+        String conc = scanner.nextLine().trim();
+        System.out.print("Via administracion [" + existente.getViaAdministracion() + "]: ");
+        String via = scanner.nextLine().trim();
+        System.out.print("Tipo control [" + existente.getTipoControl() + "]: ");
+        String control = scanner.nextLine().trim();
+        System.out.print("Stock [" + existente.getStock() + "]: ");
+        String stockTxt = scanner.nextLine().trim();
+        System.out.print("Precio publico [" + existente.getPrecioPublico() + "]: ");
+        String precioPubTxt = scanner.nextLine().trim();
+        System.out.print("Precio proveedor [" + existente.getPrecioProveedor() + "]: ");
+        String precioProvTxt = scanner.nextLine().trim();
+        System.out.print("Caducidad [" + existente.getFechaCaducidad() + "]: ");
+        String cad = scanner.nextLine().trim();
+        System.out.print("ID sucursal [" + existente.getIdSucursal() + "]: ");
+        String idSucTxt = scanner.nextLine().trim();
 
-        if (!nombre.isEmpty()) existente.setNombre(nombre);
-        if (!desc.isEmpty()) existente.setDescripcion(desc);
-        if (!precioStr.isEmpty()) {
-            try {
-                double precio = Double.parseDouble(precioStr);
-                if (precio > 0) existente.setPrecio(precio);
-            } catch (NumberFormatException e) {
-                System.out.println("  ⚠ Precio inválido, se conserva el valor anterior.");
-            }
+        if (!nombreCom.isEmpty()) existente.setNombreComercial(nombreCom);
+        if (!nombreGen.isEmpty()) existente.setNombreGenerico(nombreGen);
+        if (!forma.isEmpty()) existente.setFormaFarmaceutica(forma);
+        if (!conc.isEmpty()) existente.setConcentracion(conc);
+        if (!via.isEmpty()) existente.setViaAdministracion(via);
+        if (!control.isEmpty()) existente.setTipoControl(control);
+        if (!stockTxt.isEmpty()) existente.setStock(Integer.parseInt(stockTxt));
+        if (!precioPubTxt.isEmpty()) existente.setPrecioPublico(Double.parseDouble(precioPubTxt));
+        if (!precioProvTxt.isEmpty()) existente.setPrecioProveedor(Double.parseDouble(precioProvTxt));
+        if (!cad.isEmpty()) existente.setFechaCaducidad(cad);
+        if (!idSucTxt.isEmpty()) {
+            int nuevoIdSuc = Integer.parseInt(idSucTxt);
+            validarSucursalExiste(nuevoIdSuc);
+            existente.setIdSucursal(nuevoIdSuc);
         }
-        if (!stockStr.isEmpty()) {
-            try {
-                int stock = Integer.parseInt(stockStr);
-                if (stock >= 0) existente.setStock(stock);
-            } catch (NumberFormatException e) {
-                System.out.println("  ⚠ Stock inválido, se conserva el valor anterior.");
-            }
-        }
-        if (!cat.isEmpty()) existente.setCategoria(cat);
-        if (!idSucStr.isEmpty()) {
-            try {
-                int idSuc = Integer.parseInt(idSucStr);
-                if (idSuc > 0) existente.setIdSucursal(idSuc);
-            } catch (NumberFormatException e) {
-                System.out.println("  ⚠ ID de sucursal inválido, se conserva el valor anterior.");
-            }
-        }
+
         medicamentoDAO.editar(existente);
     }
 
-    /**
-     * Solicita un ID y elimina el medicamento correspondiente del sistema.
-     *
-     * @throws IOException Si ocurre un error al leer/escribir el archivo CSV.
-     */
     private static void eliminarMedicamento() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a eliminar: ");
-        System.out.print("  ¿Confirmas eliminar el medicamento con ID " + id + "? (s/n): ");
-        String confirmacion = scanner.nextLine().trim().toLowerCase();
-        if (confirmacion.equals("s")) {
-            medicamentoDAO.eliminar(id);
-        } else {
-            System.out.println("  Operación cancelada.");
-        }
+        int id = Validador.leerEnteroPositivo(scanner, "ID a eliminar: ");
+        medicamentoDAO.eliminar(id);
     }
 
-    // ═══════════════════════════════════════════════════
-    //                  MENÚ CLIENTES
-    // ═══════════════════════════════════════════════════
-
-    /**
-     * Muestra y gestiona el submenú de clientes.
-     */
+    // ---------- Clientes ----------
     private static void menuClientes() {
         boolean activo = true;
         while (activo) {
-            System.out.println("\n┌─────────────────────────────────────────┐");
-            System.out.println("│           GESTIÓN DE CLIENTES            │");
-            System.out.println("├─────────────────────────────────────────┤");
-            System.out.println("│  1. Agregar cliente                      │");
-            System.out.println("│  2. Consultar cliente por ID             │");
-            System.out.println("│  3. Listar todos los clientes            │");
-            System.out.println("│  4. Editar cliente                       │");
-            System.out.println("│  5. Eliminar cliente                     │");
-            System.out.println("│  0. Volver al menú principal             │");
-            System.out.println("└─────────────────────────────────────────┘");
-
-            int opcion = Validador.leerEntero(scanner, "  Selecciona una opción: ");
+            System.out.println("\nClientes");
+            System.out.println(" 1) Agregar");
+            System.out.println(" 2) Consultar por ID");
+            System.out.println(" 3) Listar todos");
+            System.out.println(" 4) Editar");
+            System.out.println(" 5) Eliminar");
+            System.out.println(" 0) Volver");
+            int opcion = Validador.leerEntero(scanner, "Opcion: ");
             try {
                 switch (opcion) {
                     case 1 -> agregarCliente();
@@ -402,122 +296,124 @@ public class Main {
                     case 4 -> editarCliente();
                     case 5 -> eliminarCliente();
                     case 0 -> activo = false;
-                    default -> System.out.println("  ⚠ Opción no válida.");
+                    default -> System.out.println("Opcion no valida.");
                 }
-            } catch (IOException e) {
-                System.out.println("  ✖ Error de archivo: " + e.getMessage());
-            } catch (IllegalArgumentException | NoSuchElementException e) {
-                System.out.println("  ✖ Error: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("  ✖ Error inesperado: " + e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * Solicita datos al usuario y agrega un nuevo cliente al sistema.
-     *
-     * @throws IOException Si ocurre un error al guardar en el archivo CSV.
-     */
     private static void agregarCliente() throws IOException {
-        System.out.println("\n  ── Nuevo Cliente ──");
-        int id = Validador.leerEnteroPositivo(scanner, "  ID Cliente        : ");
-        String nombre = Validador.leerTextoNoVacio(scanner, "  Nombre completo   : ");
-        String correo = Validador.leerTextoNoVacio(scanner, "  Correo electrónico: ");
-        String tel = Validador.leerTextoNoVacio(scanner, "  Teléfono          : ");
-        String fechaNac = Validador.leerTextoNoVacio(scanner, "  Fecha nacimiento  : ");
-        clienteDAO.agregar(new Cliente(id, nombre, correo, tel, fechaNac));
+        System.out.println("\nNuevo cliente");
+        int id = Validador.leerEnteroPositivo(scanner, "ID: ");
+        String nombre = Validador.leerTextoNoVacio(scanner, "Nombre: ");
+        String apPat = Validador.leerTextoNoVacio(scanner, "Apellido paterno: ");
+        String apMat = Validador.leerTextoNoVacio(scanner, "Apellido materno: ");
+        String tel = Validador.leerTextoNoVacio(scanner, "Telefono: ");
+        String correo = Validador.leerTextoNoVacio(scanner, "Correo: ");
+        String fechaNac = Validador.leerTextoNoVacio(scanner, "Fecha de nacimiento (AAAA-MM-DD): ");
+        String calle = Validador.leerTextoNoVacio(scanner, "Calle: ");
+        String numExt = Validador.leerTextoNoVacio(scanner, "Numero exterior: ");
+        String numInt = Validador.leerTextoNoVacio(scanner, "Numero interior (NA si no aplica): ");
+        String colonia = Validador.leerTextoNoVacio(scanner, "Colonia: ");
+        String estado = Validador.leerTextoNoVacio(scanner, "Estado: ");
+        String metodoPago = Validador.leerTextoNoVacio(scanner, "Metodo de pago (efectivo/tarjeta): ");
+        int visitas = Validador.leerEnteroNoNegativo(scanner, "Visitas al ano a la sucursal: ");
+        int idSucursal = Validador.leerEnteroPositivo(scanner, "ID de sucursal: ");
+        validarSucursalExiste(idSucursal);
+
+        clienteDAO.agregar(new Cliente(id, nombre, apPat, apMat, tel, correo, fechaNac,
+                calle, numExt, numInt, colonia, estado, metodoPago, visitas, idSucursal));
     }
 
-    /**
-     * Solicita un ID y muestra los datos del cliente correspondiente.
-     *
-     * @throws IOException Si ocurre un error al leer el archivo CSV.
-     */
     private static void consultarCliente() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a consultar: ");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a consultar: ");
         Cliente c = clienteDAO.buscarPorId(id);
-        if (c != null) System.out.println("\n" + c);
-        else System.out.println("  ✖ No se encontró cliente con ID: " + id);
+        if (c == null) System.out.println("No existe el cliente.");
+        else System.out.println("\n" + c);
     }
 
-    /**
-     * Muestra todos los clientes registrados en el sistema.
-     *
-     * @throws IOException Si ocurre un error al leer el archivo CSV.
-     */
     private static void listarClientes() throws IOException {
         List<Cliente> lista = clienteDAO.obtenerTodos();
         if (lista.isEmpty()) {
-            System.out.println("\n  No hay clientes registrados.");
-        } else {
-            System.out.println("\n  Total: " + lista.size() + " cliente(s)");
-            lista.forEach(c -> System.out.println("\n" + c));
+            System.out.println("No hay clientes registrados.");
+            return;
+        }
+        System.out.println("Total: " + lista.size());
+        for (Cliente c : lista) {
+            System.out.println("\n" + c);
         }
     }
 
-    /**
-     * Solicita un ID y permite editar los datos del cliente correspondiente.
-     *
-     * @throws IOException Si ocurre un error al leer/escribir el archivo CSV.
-     */
     private static void editarCliente() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a editar: ");
+        int id = Validador.leerEnteroPositivo(scanner, "ID a editar: ");
         Cliente existente = clienteDAO.buscarPorId(id);
         if (existente == null) {
-            System.out.println("  ✖ No se encontró cliente con ID: " + id);
+            System.out.println("No existe el cliente.");
             return;
         }
-        System.out.println("  (Deja vacío y presiona Enter para conservar el valor actual)");
-        System.out.print("  Nombre [" + existente.getNombre() + "]: ");
+        System.out.println("Deja vacio para conservar el valor actual.");
+        System.out.print("Nombre [" + existente.getNombre() + "]: ");
         String nombre = scanner.nextLine().trim();
-        System.out.print("  Correo [" + existente.getCorreo() + "]: ");
-        String correo = scanner.nextLine().trim();
-        System.out.print("  Teléfono [" + existente.getTelefono() + "]: ");
+        System.out.print("Apellido paterno [" + existente.getApellidoPaterno() + "]: ");
+        String apPat = scanner.nextLine().trim();
+        System.out.print("Apellido materno [" + existente.getApellidoMaterno() + "]: ");
+        String apMat = scanner.nextLine().trim();
+        System.out.print("Telefono [" + existente.getTelefono() + "]: ");
         String tel = scanner.nextLine().trim();
-        System.out.print("  Fecha Nacimiento [" + existente.getFechaNacimiento() + "]: ");
+        System.out.print("Correo [" + existente.getCorreo() + "]: ");
+        String correo = scanner.nextLine().trim();
+        System.out.print("Fecha nacimiento [" + existente.getFechaNacimiento() + "]: ");
         String fecha = scanner.nextLine().trim();
+        System.out.print("Calle [" + existente.getCalle() + "]: ");
+        String calle = scanner.nextLine().trim();
+        System.out.print("Numero exterior [" + existente.getNumeroExterior() + "]: ");
+        String numExt = scanner.nextLine().trim();
+        System.out.print("Numero interior [" + existente.getNumeroInterior() + "]: ");
+        String numInt = scanner.nextLine().trim();
+        System.out.print("Colonia [" + existente.getColonia() + "]: ");
+        String colonia = scanner.nextLine().trim();
+        System.out.print("Estado [" + existente.getEstado() + "]: ");
+        String estado = scanner.nextLine().trim();
+        System.out.print("Metodo pago [" + existente.getMetodoPago() + "]: ");
+        String metodo = scanner.nextLine().trim();
+        System.out.print("Visitas al ano [" + existente.getVisitasAnuales() + "]: ");
+        String visitasTxt = scanner.nextLine().trim();
+        System.out.print("ID sucursal [" + existente.getIdSucursal() + "]: ");
+        String idSucTxt = scanner.nextLine().trim();
 
         if (!nombre.isEmpty()) existente.setNombre(nombre);
-        if (!correo.isEmpty()) existente.setCorreo(correo);
+        if (!apPat.isEmpty()) existente.setApellidoPaterno(apPat);
+        if (!apMat.isEmpty()) existente.setApellidoMaterno(apMat);
         if (!tel.isEmpty()) existente.setTelefono(tel);
+        if (!correo.isEmpty()) existente.setCorreo(correo);
         if (!fecha.isEmpty()) existente.setFechaNacimiento(fecha);
+        if (!calle.isEmpty()) existente.setCalle(calle);
+        if (!numExt.isEmpty()) existente.setNumeroExterior(numExt);
+        if (!numInt.isEmpty()) existente.setNumeroInterior(numInt);
+        if (!colonia.isEmpty()) existente.setColonia(colonia);
+        if (!estado.isEmpty()) existente.setEstado(estado);
+        if (!metodo.isEmpty()) existente.setMetodoPago(metodo);
+        if (!visitasTxt.isEmpty()) existente.setVisitasAnuales(Integer.parseInt(visitasTxt));
+        if (!idSucTxt.isEmpty()) {
+            int nuevoId = Integer.parseInt(idSucTxt);
+            validarSucursalExiste(nuevoId);
+            existente.setIdSucursal(nuevoId);
+        }
 
         clienteDAO.editar(existente);
     }
 
-    /**
-     * Solicita un ID y elimina el cliente correspondiente del sistema.
-     *
-     * @throws IOException Si ocurre un error al leer/escribir el archivo CSV.
-     */
     private static void eliminarCliente() throws IOException {
-        int id = Validador.leerEnteroPositivo(scanner, "\n  ID a eliminar: ");
-        System.out.print("  ¿Confirmas eliminar el cliente con ID " + id + "? (s/n): ");
-        String confirmacion = scanner.nextLine().trim().toLowerCase();
-        if (confirmacion.equals("s")) {
-            clienteDAO.eliminar(id);
-        } else {
-            System.out.println("  Operación cancelada.");
-        }
+        int id = Validador.leerEnteroPositivo(scanner, "ID a eliminar: ");
+        clienteDAO.eliminar(id);
     }
 
-    // ═══════════════════════════════════════════════════
-    //                   UTILIDADES
-    // ═══════════════════════════════════════════════════
-
-    /**
-     * Imprime el banner de bienvenida al iniciar la aplicación.
-     */
-    private static void imprimirBienvenida() {
-        System.out.println("╔══════════════════════════════════════════════════╗");
-        System.out.println("║                                                  ║");
-        System.out.println("║     🏥  SISTEMA DE GESTIÓN - XIAO MAO           ║");
-        System.out.println("║         Cadena de Farmacias                      ║");
-        System.out.println("║                                                  ║");
-        System.out.println("║     Datos persistidos en archivos .CSV           ║");
-        System.out.println("║     Carpeta: datos/                              ║");
-        System.out.println("║                                                  ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
+    private static void validarSucursalExiste(int idSucursal) throws IOException {
+        Sucursal s = sucursalDAO.buscarPorId(idSucursal);
+        if (s == null) {
+            throw new NoSuchElementException("La sucursal " + idSucursal + " no existe, registra una primero.");
+        }
     }
 }
