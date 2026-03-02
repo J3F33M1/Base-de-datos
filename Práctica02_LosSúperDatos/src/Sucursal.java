@@ -51,9 +51,9 @@ public class Sucursal {
         this.numeroInterior = numeroInterior;
         this.colonia = colonia;
         this.estado = estado;
-        this.telefono = telefono;
-        this.horarioApertura = horarioApertura;
-        this.horarioCierre = horarioCierre;
+        setTelefono(telefono);
+        setHorarioApertura(horarioApertura);
+        setHorarioCierre(horarioCierre);
     }
 
     // Getters y setters
@@ -72,11 +72,32 @@ public class Sucursal {
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
     public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public void setTelefono(String telefono) {
+        if (telefono == null) { 
+            throw new IllegalArgumentException("Tienes que ingresar un número de teléfono");   
+        }
+        String soloDigitos = telefono.replaceAll("\\D", "");
+        if(!soloDigitos.matches("\\d{10,15}")){
+            throw new IllegalArgumentException("Telefono invalido : " + telefono);
+        }
+        this.telefono = soloDigitos;
+
+
+    }
     public String getHorarioApertura() { return horarioApertura; }
-    public void setHorarioApertura(String horarioApertura) { this.horarioApertura = horarioApertura; }
+    public void setHorarioApertura(String horarioApertura) { 
+        if(!horarioApertura.matches("^([01]?\\d|2[0-3]):[0-5]\\d$")){
+            throw new IllegalArgumentException("Formato de Horario Invalido, Formato correcto HH:mm (24h)");  
+        }
+        
+        this.horarioApertura = horarioApertura;
+     }
     public String getHorarioCierre() { return horarioCierre; }
-    public void setHorarioCierre(String horarioCierre) { this.horarioCierre = horarioCierre; }
+    public void setHorarioCierre(String horarioCierre) { 
+        if(!horarioCierre.matches("^([01]?\\d|2[0-3]):[0-5]\\d$")){
+            throw new IllegalArgumentException("Formato de Horario Invalido, Formato correcto HH:mm (24h)");  
+        }
+        this.horarioCierre = horarioCierre; }
 
     // Objeto a CSV
     /**

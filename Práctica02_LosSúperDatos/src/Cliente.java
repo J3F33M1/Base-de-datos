@@ -64,7 +64,7 @@ public class Cliente {
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
-        this.telefono = telefono;
+        setTelefono(telefono);
         this.correo = correo;
         this.fechaNacimiento = fechaNacimiento;
         this.calle = calle;
@@ -87,7 +87,17 @@ public class Cliente {
     public String getApellidoMaterno() { return apellidoMaterno; }
     public void setApellidoMaterno(String apellidoMaterno) { this.apellidoMaterno = apellidoMaterno; }
     public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public void setTelefono(String telefono) { 
+        if (telefono == null) { 
+            throw new IllegalArgumentException("Tienes que ingresar un número de teléfono");   
+        }
+        String soloDigitos = telefono.replaceAll("\\D", "");
+        if(!soloDigitos.matches("\\d{10,15}")){
+            throw new IllegalArgumentException("Telefono invalido : " + telefono);
+        }
+        this.telefono = soloDigitos;
+
+ }
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
     public String getFechaNacimiento() { return fechaNacimiento; }
