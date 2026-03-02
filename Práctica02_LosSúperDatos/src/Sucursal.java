@@ -1,7 +1,9 @@
 /**
- * Sucursal entity.
- * Stores the core branch data needed by the use case document:
- * name, full address, contact info and opening hours.
+ * Entidad que representa una Sucursal de la farmacia.
+ * <p>
+ * Almacena la informacion de ubicacion, contacto y horarios de atencion
+ * de una tienda fisica.
+ * </p>
  */
 public class Sucursal {
 
@@ -16,8 +18,22 @@ public class Sucursal {
     private String horarioApertura;
     private String horarioCierre;
 
+    /** Encabezado CSV para la persistencia de esta entidad. */
     public static final String ENCABEZADO = "idSucursal,nombre,calle,numeroExterior,numeroInterior,colonia,estado,telefono,horarioApertura,horarioCierre";
 
+    /**
+     * Constructor completo de la clase Sucursal.
+     * @param idSucursal Identificador unico.
+     * @param nombre Nombre de la sucursal.
+     * @param calle Calle del domicilio.
+     * @param numeroExterior Numero exterior.
+     * @param numeroInterior Numero interior.
+     * @param colonia Colonia.
+     * @param estado Estado o entidad federativa.
+     * @param telefono Telefono de contacto.
+     * @param horarioApertura Hora de apertura.
+     * @param horarioCierre Hora de cierre.
+     */
     public Sucursal(int idSucursal,
                     String nombre,
                     String calle,
@@ -62,7 +78,11 @@ public class Sucursal {
     public String getHorarioCierre() { return horarioCierre; }
     public void setHorarioCierre(String horarioCierre) { this.horarioCierre = horarioCierre; }
 
-    // CSV helpers
+    // Objeto a CSV
+    /**
+     * Convierte el objeto a una cadena con formato CSV.
+     * @return Cadena separada por comas con los datos de la sucursal.
+     */
     public String aCSV() {
         return String.join(",",
                 String.valueOf(idSucursal),
@@ -77,6 +97,12 @@ public class Sucursal {
                 horarioCierre);
     }
 
+    /**
+     * Crea una instancia de Sucursal a partir de una linea CSV.
+     * @param linea La cadena CSV leida del archivo.
+     * @return Un nuevo objeto Sucursal.
+     * @throws IllegalArgumentException Si la linea no tiene el formato esperado.
+     */
     public static Sucursal desdeCSV(String linea) {
         String[] partes = linea.split(",", -1);
         if (partes.length != 10) {

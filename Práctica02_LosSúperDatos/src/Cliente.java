@@ -1,10 +1,12 @@
 /**
- * Cliente o paciente de la cadena.
- * Incluye datos de contacto, domicilio, metodo de pago y la sucursal
- * donde suele comprar para poder aplicar los descuentos por recurrencia.
+ * Entidad que representa a un Cliente o paciente de la farmacia.
+ * <p>
+ * Almacena informacion personal, de contacto, domicilio, metodo de pago
+ * y la sucursal de preferencia. Incluye logica para calcular descuentos.
+ * </p>
  */
 public class Cliente {
-
+    // Atributos
     private int idCliente;
     private String nombre;
     private String apellidoPaterno;
@@ -21,9 +23,28 @@ public class Cliente {
     private int visitasAnuales;
     private int idSucursal; // relacion con sucursal
 
+    /** Encabezado CSV para la persistencia de esta entidad. */
     public static final String ENCABEZADO =
             "idCliente,nombre,apellidoPaterno,apellidoMaterno,telefono,correo,fechaNacimiento,calle,numeroExterior,numeroInterior,colonia,estado,metodoPago,visitasAnuales,idSucursal";
 
+    /**
+     * Constructor completo de la clase Cliente.
+     * @param idCliente Identificador unico.
+     * @param nombre Nombre de pila.
+     * @param apellidoPaterno Apellido paterno.
+     * @param apellidoMaterno Apellido materno.
+     * @param telefono Numero de telefono.
+     * @param correo Correo electronico.
+     * @param fechaNacimiento Fecha de nacimiento (AAAA-MM-DD).
+     * @param calle Calle del domicilio.
+     * @param numeroExterior Numero exterior.
+     * @param numeroInterior Numero interior (puede ser NA).
+     * @param colonia Colonia.
+     * @param estado Estado o entidad federativa.
+     * @param metodoPago Metodo de pago preferido.
+     * @param visitasAnuales Numero de visitas realizadas en el año.
+     * @param idSucursal ID de la sucursal asociada.
+     */
     public Cliente(int idCliente,
                    String nombre,
                    String apellidoPaterno,
@@ -88,6 +109,10 @@ public class Cliente {
     public int getIdSucursal() { return idSucursal; }
     public void setIdSucursal(int idSucursal) { this.idSucursal = idSucursal; }
 
+    /**
+     * Calcula el descuento aplicable basado en la frecuencia de visitas anuales.
+     * @return El porcentaje de descuento como decimal (0.25 para 25%).
+     */
     public double calcularDescuento() {
         if (visitasAnuales >= 6) return 0.25;
         if (visitasAnuales >= 4) return 0.10;
@@ -95,7 +120,11 @@ public class Cliente {
         return 0.0;
     }
 
-    // CSV helpers
+    // Objeto a CSV
+    /**
+     * Convierte el objeto a una cadena con formato CSV.
+     * @return Cadena separada por comas con los datos del cliente.
+     */
     public String aCSV() {
         return String.join(",",
                 String.valueOf(idCliente),
@@ -115,6 +144,12 @@ public class Cliente {
                 String.valueOf(idSucursal));
     }
 
+    /**
+     * Crea una instancia de Cliente a partir de una linea CSV.
+     * @param linea La cadena CSV leida del archivo.
+     * @return Un nuevo objeto Cliente.
+     * @throws IllegalArgumentException Si la linea no tiene el formato esperado.
+     */
     public static Cliente desdeCSV(String linea) {
         String[] partes = linea.split(",", -1);
         if (partes.length != 15) {
@@ -141,7 +176,7 @@ public class Cliente {
                 sucursalId
         );
     }
-
+    // Imprimir objeto
     @Override
     public String toString() {
         double descuento = calcularDescuento() * 100;
@@ -153,7 +188,7 @@ public class Cliente {
                 + "  Domicilio       : " + calle + " " + numeroExterior + " " + numeroInterior + ", " + colonia + ", " + estado + "\n"
                 + "  Metodo pago     : " + metodoPago + "\n"
                 + "  Visitas anuales : " + visitasAnuales + "\n"
-                + "  Descuento       : " + String.format("%.0f", descuento) + "%\n"
+                + "  Descuento       : " + descuento + "%\n"
                 + "  Sucursal ID     : " + idSucursal;
     }
 }

@@ -4,12 +4,22 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * DAO para medicamentos o insumos.
+ * Objeto de Acceso a Datos (DAO) para la entidad Medicamento.
+ * <p>
+ * Gestiona la persistencia de medicamentos e insumos en un archivo CSV,
+ * permitiendo agregar, buscar, listar, editar y eliminar registros.
+ * </p>
  */
 public class MedicamentoDAO {
+    // Esta es la parte de la ruta donde se guardan los CSV, verificar que funcione correctamente en el directorio o de ser necesario mas robusto
+    private static final String RUTA = "Práctica02_LosSúperDatos/src/medicamentos.csv";
 
-    private static final String RUTA = "datos/medicamentos.csv";
-
+    /**
+     * Agrega un nuevo medicamento al archivo CSV.
+     * @param med El objeto Medicamento a agregar.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     * @throws IllegalArgumentException Si ya existe un medicamento con el mismo ID.
+     */
     public void agregar(Medicamento med) throws IOException {
         if (buscarPorId(med.getIdMedicamento()) != null) {
             throw new IllegalArgumentException("Ya existe un medicamento con ID: " + med.getIdMedicamento());
@@ -18,6 +28,12 @@ public class MedicamentoDAO {
         System.out.println("Medicamento agregado.");
     }
 
+    /**
+     * Busca un medicamento por su identificador.
+     * @param id El ID del medicamento.
+     * @return El objeto Medicamento encontrado o null si no existe.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     public Medicamento buscarPorId(int id) throws IOException {
         List<String> lineas = GestorCSV.leerLineas(RUTA, Medicamento.ENCABEZADO);
         for (String linea : lineas) {
@@ -31,6 +47,11 @@ public class MedicamentoDAO {
         return null;
     }
 
+    /**
+     * Recupera todos los medicamentos registrados.
+     * @return Una lista de objetos Medicamento.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     public List<Medicamento> obtenerTodos() throws IOException {
         List<Medicamento> lista = new ArrayList<>();
         List<String> lineas = GestorCSV.leerLineas(RUTA, Medicamento.ENCABEZADO);
@@ -44,6 +65,12 @@ public class MedicamentoDAO {
         return lista;
     }
 
+    /**
+     * Actualiza los datos de un medicamento existente.
+     * @param actualizado El objeto Medicamento con los nuevos datos.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     * @throws NoSuchElementException Si el medicamento no existe.
+     */
     public void editar(Medicamento actualizado) throws IOException {
         List<String> lineas = GestorCSV.leerLineas(RUTA, Medicamento.ENCABEZADO);
         List<String> nuevasLineas = new ArrayList<>();
@@ -71,6 +98,12 @@ public class MedicamentoDAO {
         System.out.println("Medicamento actualizado.");
     }
 
+    /**
+     * Elimina un medicamento del registro.
+     * @param id El ID del medicamento a eliminar.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     * @throws NoSuchElementException Si el medicamento no existe.
+     */
     public void eliminar(int id) throws IOException {
         List<String> lineas = GestorCSV.leerLineas(RUTA, Medicamento.ENCABEZADO);
         List<String> nuevasLineas = new ArrayList<>();

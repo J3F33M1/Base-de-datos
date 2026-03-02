@@ -4,8 +4,11 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * CRUD para sucursales, medicamentos/insumos y clientes.
- * Aun falta todo lo de doumentacion lo borre para que no este tan sesgado lo que vayamos a hacer
+ * Clase principal de la aplicacion Farmacia Xiao Mao.
+ * <p>
+ * Contiene el punto de entrada (main) y la logica de la interfaz de usuario en consola
+ * para gestionar el CRUD de sucursales, medicamentos y clientes.
+ * </p>
  */
 public class Main {
 
@@ -14,6 +17,10 @@ public class Main {
     private static final MedicamentoDAO medicamentoDAO = new MedicamentoDAO();
     private static final ClienteDAO clienteDAO = new ClienteDAO();
 
+    /**
+     * Punto de entrada de la aplicacion.
+     * @param args Argumentos de la linea de comandos.
+     */
     public static void main(String[] args) {
         System.out.println("=== Farmacia Xiao Mao ===");
         boolean activo = true;
@@ -36,7 +43,10 @@ public class Main {
         scanner.close();
     }
 
-    // ---------- Sucursales ----------
+    // Parte de Sucursales
+    /**
+     * Muestra el submenu para la gestion de sucursales.
+     */
     private static void menuSucursales() {
         boolean activo = true;
         while (activo) {
@@ -64,6 +74,10 @@ public class Main {
         }
     }
 
+    /**
+     * Solicita datos al usuario y agrega una nueva sucursal.
+     * @throws IOException Si ocurre un error al guardar.
+     */
     private static void agregarSucursal() throws IOException {
         System.out.println("\nNueva sucursal");
         int id = Validador.leerEnteroPositivo(scanner, "ID: ");
@@ -79,6 +93,10 @@ public class Main {
         sucursalDAO.agregar(new Sucursal(id, nombre, calle, numExt, numInt, colonia, estado, tel, horaIni, horaFin));
     }
 
+    /**
+     * Consulta y muestra una sucursal por su ID.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     private static void consultarSucursal() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a consultar: ");
         Sucursal s = sucursalDAO.buscarPorId(id);
@@ -89,6 +107,10 @@ public class Main {
         }
     }
 
+    /**
+     * Lista todas las sucursales registradas.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     private static void listarSucursales() throws IOException {
         List<Sucursal> lista = sucursalDAO.obtenerTodas();
         if (lista.isEmpty()) {
@@ -101,6 +123,10 @@ public class Main {
         }
     }
 
+    /**
+     * Permite editar los campos de una sucursal existente.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     private static void editarSucursal() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a editar: ");
         Sucursal existente = sucursalDAO.buscarPorId(id);
@@ -141,6 +167,10 @@ public class Main {
         sucursalDAO.editar(existente);
     }
 
+    /**
+     * Elimina una sucursal si no tiene dependencias (medicamentos o clientes).
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     private static void eliminarSucursal() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a eliminar: ");
         // proteger relacion: no se elimina si hay registros dependientes
@@ -155,7 +185,10 @@ public class Main {
         sucursalDAO.eliminar(id);
     }
 
-    // ---------- Medicamentos ----------
+    // Parte de Medicamentos / Insumos
+    /**
+     * Muestra el submenu para la gestion de medicamentos.
+     */
     private static void menuMedicamentos() {
         boolean activo = true;
         while (activo) {
@@ -183,6 +216,10 @@ public class Main {
         }
     }
 
+    /**
+     * Solicita datos al usuario y agrega un nuevo medicamento.
+     * @throws IOException Si ocurre un error al guardar.
+     */
     private static void agregarMedicamento() throws IOException {
         System.out.println("\nNuevo medicamento/insumo");
         int id = Validador.leerEnteroPositivo(scanner, "ID: ");
@@ -202,6 +239,10 @@ public class Main {
                 stock, precioPub, precioProv, cad, idSucursal));
     }
 
+    /**
+     * Consulta y muestra un medicamento por su ID.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     private static void consultarMedicamento() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a consultar: ");
         Medicamento m = medicamentoDAO.buscarPorId(id);
@@ -209,6 +250,10 @@ public class Main {
         else System.out.println("\n" + m);
     }
 
+    /**
+     * Lista todos los medicamentos registrados.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     private static void listarMedicamentos() throws IOException {
         List<Medicamento> lista = medicamentoDAO.obtenerTodos();
         if (lista.isEmpty()) {
@@ -221,6 +266,10 @@ public class Main {
         }
     }
 
+    /**
+     * Permite editar los campos de un medicamento existente.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     private static void editarMedicamento() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a editar: ");
         Medicamento existente = medicamentoDAO.buscarPorId(id);
@@ -271,12 +320,19 @@ public class Main {
         medicamentoDAO.editar(existente);
     }
 
+    /**
+     * Elimina un medicamento por su ID.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     private static void eliminarMedicamento() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a eliminar: ");
         medicamentoDAO.eliminar(id);
     }
 
-    // ---------- Clientes ----------
+    // Parte de Clientes
+    /**
+     * Muestra el submenu para la gestion de clientes.
+     */
     private static void menuClientes() {
         boolean activo = true;
         while (activo) {
@@ -304,6 +360,10 @@ public class Main {
         }
     }
 
+    /**
+     * Solicita datos al usuario y agrega un nuevo cliente.
+     * @throws IOException Si ocurre un error al guardar.
+     */
     private static void agregarCliente() throws IOException {
         System.out.println("\nNuevo cliente");
         int id = Validador.leerEnteroPositivo(scanner, "ID: ");
@@ -327,6 +387,10 @@ public class Main {
                 calle, numExt, numInt, colonia, estado, metodoPago, visitas, idSucursal));
     }
 
+    /**
+     * Consulta y muestra un cliente por su ID.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     private static void consultarCliente() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a consultar: ");
         Cliente c = clienteDAO.buscarPorId(id);
@@ -334,6 +398,10 @@ public class Main {
         else System.out.println("\n" + c);
     }
 
+    /**
+     * Lista todos los clientes registrados.
+     * @throws IOException Si ocurre un error de lectura.
+     */
     private static void listarClientes() throws IOException {
         List<Cliente> lista = clienteDAO.obtenerTodos();
         if (lista.isEmpty()) {
@@ -346,6 +414,10 @@ public class Main {
         }
     }
 
+    /**
+     * Permite editar los campos de un cliente existente.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     private static void editarCliente() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a editar: ");
         Cliente existente = clienteDAO.buscarPorId(id);
@@ -405,11 +477,21 @@ public class Main {
         clienteDAO.editar(existente);
     }
 
+    /**
+     * Elimina un cliente por su ID.
+     * @throws IOException Si ocurre un error de lectura/escritura.
+     */
     private static void eliminarCliente() throws IOException {
         int id = Validador.leerEnteroPositivo(scanner, "ID a eliminar: ");
         clienteDAO.eliminar(id);
     }
 
+    /**
+     * Verifica si una sucursal existe antes de asignarla a otra entidad.
+     * @param idSucursal El ID de la sucursal a verificar.
+     * @throws IOException Si ocurre un error de lectura.
+     * @throws NoSuchElementException Si la sucursal no existe.
+     */
     private static void validarSucursalExiste(int idSucursal) throws IOException {
         Sucursal s = sucursalDAO.buscarPorId(idSucursal);
         if (s == null) {

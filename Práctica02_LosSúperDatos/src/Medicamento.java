@@ -1,7 +1,9 @@
 /**
- * Medicamento o insumo.
- * Incluye relacion con la sucursal que lo almacena para reflejar el
- * control de inventario de cada sucursal.
+ * Entidad que representa un Medicamento o insumo medico.
+ * <p>
+ * Contiene detalles del producto, precios, stock y la relacion con la
+ * sucursal donde se encuentra almacenado.
+ * </p>
  */
 public class Medicamento {
 
@@ -18,9 +20,25 @@ public class Medicamento {
     private String fechaCaducidad;    // AAAA-MM-DD
     private int idSucursal;           // referencia a sucursal
 
+    /** Encabezado CSV para la persistencia de esta entidad. */
     public static final String ENCABEZADO =
             "idMedicamento,nombreComercial,nombreGenerico,formaFarmaceutica,concentracion,viaAdministracion,tipoControl,stock,precioPublico,precioProveedor,fechaCaducidad,idSucursal";
 
+    /**
+     * Constructor completo de la clase Medicamento.
+     * @param idMedicamento Identificador unico.
+     * @param nombreComercial Nombre comercial del producto.
+     * @param nombreGenerico Nombre generico o sustancia activa.
+     * @param formaFarmaceutica Forma (tableta, jarabe, etc.).
+     * @param concentracion Concentracion del activo.
+     * @param viaAdministracion Via de administracion.
+     * @param tipoControl Tipo de control (libre, receta, controlado).
+     * @param stock Cantidad disponible.
+     * @param precioPublico Precio de venta al publico.
+     * @param precioProveedor Costo de adquisicion.
+     * @param fechaCaducidad Fecha de caducidad (AAAA-MM-DD).
+     * @param idSucursal ID de la sucursal donde esta el stock.
+     */
     public Medicamento(int idMedicamento,
                        String nombreComercial,
                        String nombreGenerico,
@@ -74,6 +92,10 @@ public class Medicamento {
     public void setIdSucursal(int idSucursal) { this.idSucursal = idSucursal; }
 
     // CSV helpers
+    /**
+     * Convierte el objeto a una cadena con formato CSV.
+     * @return Cadena separada por comas con los datos del medicamento.
+     */
     public String aCSV() {
         return String.join(",",
                 String.valueOf(idMedicamento),
@@ -90,6 +112,12 @@ public class Medicamento {
                 String.valueOf(idSucursal));
     }
 
+    /**
+     * Crea una instancia de Medicamento a partir de una linea CSV.
+     * @param linea La cadena CSV leida del archivo.
+     * @return Un nuevo objeto Medicamento.
+     * @throws IllegalArgumentException Si la linea no tiene el formato esperado.
+     */
     public static Medicamento desdeCSV(String linea) {
         String[] partes = linea.split(",", -1);
         if (partes.length != 12) {
@@ -116,6 +144,7 @@ public class Medicamento {
         );
     }
 
+    // Imprimir objeto
     @Override
     public String toString() {
         return "Medicamento #" + idMedicamento + "\n"
@@ -126,8 +155,8 @@ public class Medicamento {
                 + "  Via administracion: " + viaAdministracion + "\n"
                 + "  Tipo control     : " + tipoControl + "\n"
                 + "  Stock            : " + stock + "\n"
-                + "  Precio publico   : " + String.format("%.2f", precioPublico) + "\n"
-                + "  Precio proveedor : " + String.format("%.2f", precioProveedor) + "\n"
+                + "  Precio publico   : " + precioPublico + "\n"
+                + "  Precio proveedor : " + precioProveedor + "\n"
                 + "  Caducidad        : " + fechaCaducidad + "\n"
                 + "  Sucursal ID      : " + idSucursal;
     }
