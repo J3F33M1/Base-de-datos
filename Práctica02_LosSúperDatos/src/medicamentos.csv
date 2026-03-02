@@ -1,0 +1,3 @@
+idMedicamento,nombreComercial,nombreGenerico,formaFarmaceutica,concentracion,presentacion,viaAdministracion,clasificacion,tipoControl,laboratorio,descripcion,stock,precioPublico,precioProveedor,fechaCaducidad,idSucursal
+1,NombrePrueba,NGenericoPrueba,tableta,300,Caja con 12,Oral,Antibiotico,receta,LaboratorioPrueba,Azul fuerte grande,25,43.25,25.5,2027-04-02,1
+2,NPr2,NGPr2,jarabe,100 mg,Botella 250 ml,Oral,Antiviral,venta libre,LabPR2,Rojo Vic Grande,30,32.0,43.0,2027-01-01,2

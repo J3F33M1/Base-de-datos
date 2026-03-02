@@ -1,0 +1,2 @@
+idCliente,nombre,apellidoPaterno,apellidoMaterno,telefono,correo,fechaNacimiento,calle,numeroExterior,numeroInterior,colonia,estado,metodoPago,visitasAnuales,idSucursal
+1,NombreCPrueba,APPrueba,AMPrueba,1111111111,Correoprueba,2000-05-05,CallePrueba,111,NA,ColoniaPrueba,EstadoPrueba,efectivo,2,1

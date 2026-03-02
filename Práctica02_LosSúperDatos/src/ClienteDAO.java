@@ -24,6 +24,9 @@ public class ClienteDAO {
         if (buscarPorId(cliente.getIdCliente()) != null) {
             throw new IllegalArgumentException("Ya existe un cliente con ID: " + cliente.getIdCliente());
         }
+        if (buscarPorCorreo(cliente.getCorreo()) != null) {
+            throw new IllegalArgumentException("El correo " + cliente.getCorreo() + " ya esta registrado.");
+        }
         GestorCSV.agregarLinea(RUTA, Cliente.ENCABEZADO, cliente.aCSV());
         System.out.println("Cliente agregado.");
     }
@@ -42,6 +45,25 @@ public class ClienteDAO {
                 if (c.getIdCliente() == id) return c;
             } catch (Exception e) {
                 System.err.println("Linea omitida en clientes: " + linea);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Busca un cliente por su correo electronico.
+     * @param correo El correo a buscar.
+     * @return El objeto Cliente si se encuentra, o null si no existe.
+     * @throws IOException Si ocurre un error al leer el archivo.
+     */
+    public Cliente buscarPorCorreo(String correo) throws IOException {
+        List<String> lineas = GestorCSV.leerLineas(RUTA, Cliente.ENCABEZADO);
+        for (String linea : lineas) {
+            try {
+                Cliente c = Cliente.desdeCSV(linea);
+                if (c.getCorreo().equalsIgnoreCase(correo)) return c;
+            } catch (Exception e) {
+                // Ignorar lineas corruptas
             }
         }
         return null;
@@ -80,6 +102,12 @@ public class ClienteDAO {
             try {
                 Cliente c = Cliente.desdeCSV(linea);
                 if (c.getIdCliente() == actualizado.getIdCliente()) {
+                    // Validar que si cambio el correo, el nuevo no exista ya en otro cliente
+                    Cliente coincidenciaCorreo = buscarPorCorreo(actualizado.getCorreo());
+                    if (coincidenciaCorreo != null && coincidenciaCorreo.getIdCliente() != actualizado.getIdCliente()) {
+                        throw new IllegalArgumentException("El correo " + actualizado.getCorreo() + " ya pertenece a otro cliente.");
+                    }
+                    
                     nuevasLineas.add(actualizado.aCSV());
                     encontrado = true;
                 } else {

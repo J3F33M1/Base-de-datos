@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -227,15 +229,34 @@ public class Main {
         String nombreGen = Validador.leerTextoNoVacio(scanner, "Nombre generico: ");
         String forma = Validador.leerTextoNoVacio(scanner, "Forma farmaceutica (tableta, jarabe, etc): ");
         String conc = Validador.leerTextoNoVacio(scanner, "Concentracion (ej 500 mg): ");
+        String pres = Validador.leerTextoNoVacio(scanner, "Presentacion (ej Caja con 20): ");
         String via = Validador.leerTextoNoVacio(scanner, "Via de administracion: ");
+        String clas = Validador.leerTextoNoVacio(scanner, "Clasificacion (ej Antibiotico): ");
         String control = Validador.leerTextoNoVacio(scanner, "Tipo de control (receta, venta libre, controlado): ");
+        String lab = Validador.leerTextoNoVacio(scanner, "Laboratorio fabricante: ");
+        String desc = Validador.leerTextoNoVacio(scanner, "Descripcion (color, forma, etc): ");
         int stock = Validador.leerEnteroNoNegativo(scanner, "Stock: ");
         double precioPub = Validador.leerDoublePositivo(scanner, "Precio publico: ");
         double precioProv = Validador.leerDoublePositivo(scanner, "Precio proveedor: ");
-        String cad = Validador.leerTextoNoVacio(scanner, "Fecha de caducidad (AAAA-MM-DD): ");
+        
+        String cad;
+        while (true) {
+            cad = Validador.leerTextoNoVacio(scanner, "Fecha de caducidad (AAAA-MM-DD): ");
+            try {
+                LocalDate fecha = LocalDate.parse(cad);
+                if (fecha.isBefore(LocalDate.now())) {
+                    System.out.println("  Error: La fecha de caducidad no puede ser anterior a la fecha actual.");
+                } else {
+                    break;
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("  Error: Formato invalido. Use AAAA-MM-DD.");
+            }
+        }
+        
         int idSucursal = Validador.leerEnteroPositivo(scanner, "ID de sucursal: ");
         validarSucursalExiste(idSucursal);
-        medicamentoDAO.agregar(new Medicamento(id, nombreCom, nombreGen, forma, conc, via, control,
+        medicamentoDAO.agregar(new Medicamento(id, nombreCom, nombreGen, forma, conc, pres, via, clas, control, lab, desc,
                 stock, precioPub, precioProv, cad, idSucursal));
     }
 
@@ -286,10 +307,18 @@ public class Main {
         String forma = scanner.nextLine().trim();
         System.out.print("Concentracion [" + existente.getConcentracion() + "]: ");
         String conc = scanner.nextLine().trim();
+        System.out.print("Presentacion [" + existente.getPresentacion() + "]: ");
+        String pres = scanner.nextLine().trim();
         System.out.print("Via administracion [" + existente.getViaAdministracion() + "]: ");
         String via = scanner.nextLine().trim();
+        System.out.print("Clasificacion [" + existente.getClasificacion() + "]: ");
+        String clas = scanner.nextLine().trim();
         System.out.print("Tipo control [" + existente.getTipoControl() + "]: ");
         String control = scanner.nextLine().trim();
+        System.out.print("Laboratorio [" + existente.getLaboratorio() + "]: ");
+        String lab = scanner.nextLine().trim();
+        System.out.print("Descripcion [" + existente.getDescripcion() + "]: ");
+        String desc = scanner.nextLine().trim();
         System.out.print("Stock [" + existente.getStock() + "]: ");
         String stockTxt = scanner.nextLine().trim();
         System.out.print("Precio publico [" + existente.getPrecioPublico() + "]: ");
@@ -305,12 +334,27 @@ public class Main {
         if (!nombreGen.isEmpty()) existente.setNombreGenerico(nombreGen);
         if (!forma.isEmpty()) existente.setFormaFarmaceutica(forma);
         if (!conc.isEmpty()) existente.setConcentracion(conc);
+        if (!pres.isEmpty()) existente.setPresentacion(pres);
         if (!via.isEmpty()) existente.setViaAdministracion(via);
+        if (!clas.isEmpty()) existente.setClasificacion(clas);
         if (!control.isEmpty()) existente.setTipoControl(control);
+        if (!lab.isEmpty()) existente.setLaboratorio(lab);
+        if (!desc.isEmpty()) existente.setDescripcion(desc);
         if (!stockTxt.isEmpty()) existente.setStock(Integer.parseInt(stockTxt));
         if (!precioPubTxt.isEmpty()) existente.setPrecioPublico(Double.parseDouble(precioPubTxt));
         if (!precioProvTxt.isEmpty()) existente.setPrecioProveedor(Double.parseDouble(precioProvTxt));
-        if (!cad.isEmpty()) existente.setFechaCaducidad(cad);
+        if (!cad.isEmpty()) {
+            try {
+                LocalDate fecha = LocalDate.parse(cad);
+                if (fecha.isBefore(LocalDate.now())) {
+                    System.out.println("  Aviso: La fecha ingresada es anterior a hoy. No se actualizo la caducidad.");
+                } else {
+                    existente.setFechaCaducidad(cad);
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("  Aviso: Formato de fecha invalido. No se actualizo la caducidad.");
+            }
+        }
         if (!idSucTxt.isEmpty()) {
             int nuevoIdSuc = Integer.parseInt(idSucTxt);
             validarSucursalExiste(nuevoIdSuc);
